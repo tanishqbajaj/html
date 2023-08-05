@@ -1,0 +1,29 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+      
+  pull_request:
+    branches: main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH and deploy code via sFTP
+      uses: appleboy/ssh-action@master
+      with:
+        host: ec2-18-60-62-55.ap-south-2.compute.amazonaws.com
+        username: ubuntu
+        key: ${{ secrets.SSH_KEY }}
+        port: 2222
+        script: |
+         cd /var/www/html
+         git pull origin main --rebase
+         
